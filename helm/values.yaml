@@ -1,0 +1,35 @@
+frontend:
+  image:
+    repository: andrews326/todo-ui
+    tag: latest
+  service:
+    type: NodePort
+    port: 80
+
+backend:
+  image:
+    repository: andrews326/todo-app
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 8080
+  env:
+    DB_USER: admin
+    DB_PASS: admin123
+    DB_HOST: mysql
+    DB_PORT: "3306"
+    DB_NAME: mydb
+    JWT_SECRET: "G9s!zX7$$eA2@tKp"
+
+mysql:
+  image:
+    repository: mysql
+    tag: "8.0"
+  auth:
+    rootPassword: root123
+    database: mydb
+    user: admin
+    password: admin123
+  service:
+    port: 3306
+

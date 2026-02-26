@@ -1,0 +1,32 @@
+# STEP 1: Create Helm chart (you already did or do now)
+
+   helm create todo-chart <chart name>
+   cd todo-chart
+
+# STEP 2: Replace values.yaml (VERY IMPORTANT)
+
+👉 Delete everything in todo-chart/values.yaml  
+
+
+# STEP 3: Delete default templates
+
+   Helm creates junk files we don’t need.
+
+   rm -rf templates/*
+
+# STEP 4: Create Deployment and Service inside the template folder for Each 
+
+    nano templates/mysql.yaml
+    nano templates/backend.yaml
+    nano templates/frontend.yaml
+
+
+# STEP 5: Install the Helm chart 🚀
+
+   From inside todo-chart folder:    
+
+   helm install todo-app .
+
+
+
+
