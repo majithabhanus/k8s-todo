@@ -1,0 +1,18 @@
+| Service Type   | What Port You Use in URL    | Publicly Accessible?  | Notes                                     |
+| -------------- | --------------------------- | --------------------- | ----------------------------------------- |
+| `NodePort`     | `http://<NodeIP>:nodePort`  | ✅ Yes (with firewall) | You must use the `nodePort` (e.g., 32625) |
+| `LoadBalancer` | `http://<EXTERNAL-IP>:port` | ✅ Yes                 | You use the `port`, not the nodePort      |
+| `ClusterIP`    | ❌ Not accessible externally | ❌ No                  | For internal cluster use only             |
+| `Ingress`      | `http://<INGRESS-HOST>/`    | ✅ Yes                 | Uses Ingress controller and rules         |
+
+
+
+#kops
+
+| Step                                                           | Action                                                            | What AWS creates       |
+| -------------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------- |
+| 1️⃣ `eksctl create cluster`                                    | Creates VPC, EKS control plane, EC2 worker nodes, IAM roles, SGs. | ✅ Core infra only      |
+| 2️⃣ `kubectl apply -f mysql-deployment.yaml` + PVC             | Creates MySQL pod + PVC → triggers AWS to create **EBS volume**.  | 💾 EBS volume          |
+| 3️⃣ `kubectl apply -f goapp-service.yaml` (type: LoadBalancer) | Triggers AWS to create **ELB (ALB/NLB)**.                         | 🌐 LoadBalancer        |
+| 4️⃣ `kubectl apply -f configmap.yaml`, `secret.yaml`           | Only creates in-cluster objects — no AWS resource.                | 🔒 Inside cluster only |
+| 5️⃣ `kubectl apply -f deployment.yaml` for your Go app         | Runs pods on EC2 worker nodes.                                    | 🚀 Uses existing nodes |
